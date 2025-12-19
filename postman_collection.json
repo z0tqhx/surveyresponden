@@ -1,0 +1,486 @@
+{
+  "info": {
+    "_postman_id": "3a7a8f2b-8f04-4b6a-9d6a-6c5e8c5c4c40",
+    "name": "Go Survey API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
+    { "key": "surveyId", "value": "" },
+    { "key": "surveySlug", "value": "" },
+    { "key": "aspectId", "value": "" },
+    { "key": "subAspectId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.token) {",
+                  "    pm.environment.set('token', json.token);",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User (Protected)",
+      "item": [
+        {
+          "name": "Get Current User (/users/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Surveys (Public)",
+      "item": [
+        {
+          "name": "List Surveys",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys"]
+            }
+          }
+        },
+        {
+          "name": "Get Survey By Slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/slug/{{surveyId}}/{{surveySlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "slug", "{{surveyId}}", "{{surveySlug}}"]
+            }
+          }
+        },
+        {
+          "name": "Submit Survey Response",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"survey_id\": \"{{surveyId}}\",\n  \"consent\": true,\n  \"respondent\": {\n    \"name\": \"Budi\",\n    \"job\": \"Karyawan\",\n    \"gender\": \"Laki-laki\",\n    \"age\": 25,\n    \"education\": \"S1\"\n  },\n  \"responses\": [\n    {\n      \"sub_aspect_id\": \"00000000-0000-0000-0000-000000000000\",\n      \"value\": \"Setuju\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/responses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "responses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Surveys (Admin)",
+      "item": [
+        {
+          "name": "Create Survey",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Survey Kepuasan\",\n  \"description\": \"Contoh deskripsi\",\n  \"slug\": \"survey-kepuasan\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys"]
+            }
+          }
+        },
+        {
+          "name": "Update Survey",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Survey Kepuasan (Update)\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Survey",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Survey Responses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/responses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "responses"]
+            }
+          }
+        },
+        {
+          "name": "Get Survey Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "summary"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Dashboard",
+      "item": [
+        {
+          "name": "List Created Surveys (/admin/surveys)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "surveys"]
+            }
+          }
+        },
+        {
+          "name": "Get Survey By Slug (/admin/surveys/slug/:slug)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/surveys/slug/{{surveySlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "surveys", "slug", "{{surveySlug}}"]
+            }
+          }
+        },
+        {
+          "name": "Submit Survey Response (/admin/surveys/:id/responses)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"survey_id\": \"{{surveyId}}\",\n  \"consent\": true,\n  \"respondent\": {\n    \"name\": \"Budi\",\n    \"job\": \"Karyawan\",\n    \"gender\": \"Laki-laki\",\n    \"age\": 25,\n    \"education\": \"S1\"\n  },\n  \"responses\": [\n    {\n      \"sub_aspect_id\": \"00000000-0000-0000-0000-000000000000\",\n      \"value\": \"Setuju\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/surveys/{{surveyId}}/responses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "surveys", "{{surveyId}}", "responses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Petugas Dashboard",
+      "item": [
+        {
+          "name": "List Surveys (/petugas/surveys)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "surveys"]
+            }
+          }
+        },
+        {
+          "name": "Get Survey By Slug (/petugas/surveys/slug/:slug)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/surveys/slug/{{surveySlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "surveys", "slug", "{{surveySlug}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Responses (Admin/Petugas)",
+      "item": [
+        {
+          "name": "List All Responses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/responses?page=1&limit=50&survey_id={{surveyId}}&q={{search}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "responses"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "50" },
+                { "key": "survey_id", "value": "{{surveyId}}" },
+                { "key": "q", "value": "{{search}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Survey Responses Analytics (/surveys/:id/responses/analytics)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/responses/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "responses", "analytics"]
+            }
+          }
+        }
+      ]
+    }
+    ,
+    {
+      "name": "Content (Admin/Petugas)",
+      "item": [
+        {
+          "name": "Create Aspect (Aspek)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pelayanan\",\n  \"order_number\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "aspects"]
+            }
+          }
+        },
+        {
+          "name": "List Aspects (Aspek)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "aspects"]
+            }
+          }
+        },
+        {
+          "name": "Update Aspect (Aspek)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pelayanan (Update)\",\n  \"order_number\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Aspect (Aspek)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Sub-Aspect (Pertanyaan)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Petugas melayani dengan ramah\",\n  \"order_number\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}/sub-aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}", "sub-aspects"]
+            }
+          }
+        },
+        {
+          "name": "List Sub-Aspects (Pertanyaan)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}/sub-aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}", "sub-aspects"]
+            }
+          }
+        },
+        {
+          "name": "Update Sub-Aspect (Pertanyaan)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Petugas melayani dengan ramah (Update)\",\n  \"order_number\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sub-aspects/{{subAspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sub-aspects", "{{subAspectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Sub-Aspect (Pertanyaan)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sub-aspects/{{subAspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sub-aspects", "{{subAspectId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
