@@ -115,6 +115,46 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
     education: "",
   });
 
+  const jobOptions = React.useMemo(
+    () =>
+      [
+        "Status tidak bekerja - Belum/Tidak bekerja",
+        "Status tidak bekerja - Mengurus rumah tangga",
+        "Status tidak bekerja - Pelajar/Mahasiswa",
+        "Pegawai Pemerintah - PNS",
+        "Pegawai Pemerintah - TNI",
+        "Pegawai Pemerintah - Polri",
+        "Pegawai Pemerintah - Kepala Desa",
+        "Wiraswasta - Pedagang",
+        "Wiraswasta - Buruh",
+        "Wiraswasta - Petani",
+        "Wiraswasta - Nelayan",
+        "Wiraswasta - Wiraswasta",
+        "Profesi khusus - Dokter",
+        "Profesi khusus - Guru",
+        "Profesi khusus - Seniman",
+        "Pekerjaan informal - Tukang",
+        "Pekerjaan informal - Buruh harian lepas",
+      ],
+    []
+  );
+
+  const educationOptions = React.useMemo(
+    () =>
+      [
+        "Tidak Sekolah / Tidak Tamat SD",
+        "SD (Sekolah Dasar) atau sederajat (misalnya, MI - Madrasah Ibtidaiyah)",
+        "SMP (Sekolah Menengah Pertama) atau sederajat (misalnya, MTs - Madrasah Tsanawiyah)",
+        "SMA (Sekolah Menengah Atas) atau sederajat (misalnya, SMK - Sekolah Menengah Kejuruan, MA - Madrasah Aliyah)",
+        "D1/D2 (Diploma 1 atau 2)",
+        "D3 (Diploma 3)",
+        "D4/S1 (Diploma 4 atau Sarjana 1)",
+        "S2 (Sarjana 2 / Magister)",
+        "S3 (Sarjana 3 / Doktor)",
+      ],
+    []
+  );
+
   const [responses, setResponses] = React.useState<Record<string, string>>(() => {
     const init: Record<string, string> = {};
     for (const sa of subAspects) {
@@ -146,6 +186,23 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    const ageNum = respondent.age ? Number(respondent.age) : NaN;
+    const respondentIncomplete =
+      respondent.name.trim().length === 0 ||
+      respondent.job.trim().length === 0 ||
+      respondent.gender.trim().length === 0 ||
+      respondent.education.trim().length === 0 ||
+      !Number.isFinite(ageNum) ||
+      ageNum <= 0;
+
+    if (respondentIncomplete) {
+      openAlert(
+        "Data responden belum lengkap",
+        "Data responden ada yang belum di isi. Silakan lengkapi data responden terlebih dulu."
+      );
+      return;
+    }
 
     if (!consent) {
       openAlert("Persetujuan diperlukan", "Silakan centang kotak persetujuan.");
@@ -179,7 +236,7 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
         .map(([sub_aspect_id, value]) => ({ sub_aspect_id, value } as ResponseItem)),
     };
 
-    const url = `${baseUrl}/api/surveys/${encodeURIComponent(surveyId)}/responses`;
+    const url = `/api/surveys/${encodeURIComponent(surveyId)}/responses`;
 
     try {
       const res = await fetch(url, {
@@ -298,16 +355,38 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
                 value={respondent.job}
                 onChange={(e) => setRespondent((s) => ({ ...s, job: e.target.value }))}
                 placeholder="Pekerjaan"
+                list="job-options"
               />
+              <datalist id="job-options">
+                {jobOptions.map((opt) => (
+                  <option key={opt} value={opt} />
+                ))}
+              </datalist>
             </Field.Root>
 
             <Field.Root>
               <Field.Label>Jenis Kelamin</Field.Label>
-              <Input
-                value={respondent.gender}
-                onChange={(e) => setRespondent((s) => ({ ...s, gender: e.target.value }))}
-                placeholder="Laki-laki / Perempuan"
-              />
+              <Box
+                borderWidth="1px"
+                borderRadius="md"
+                px={3}
+                h="40px"
+                bg="white"
+                display="flex"
+                alignItems="center"
+              >
+                <select
+                  value={respondent.gender}
+                  onChange={(e) =>
+                    setRespondent((s) => ({ ...s, gender: e.target.value }))
+                  }
+                  style={{ width: "100%", background: "transparent", outline: "none" }}
+                >
+                  <option value="">Pilih</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </Box>
             </Field.Root>
           </HStack>
 
@@ -327,7 +406,13 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
                 value={respondent.education}
                 onChange={(e) => setRespondent((s) => ({ ...s, education: e.target.value }))}
                 placeholder="S1"
+                list="education-options"
               />
+              <datalist id="education-options">
+                {educationOptions.map((opt) => (
+                  <option key={opt} value={opt} />
+                ))}
+              </datalist>
             </Field.Root>
           </HStack>
 
