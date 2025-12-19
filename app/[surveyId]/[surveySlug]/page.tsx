@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { Box, Container, Heading, Text, VStack } from "@chakra-ui/react";
 import { PublicSurveyForm } from "./public-survey-form";
 
@@ -28,8 +29,12 @@ export default async function SurveyPublicPage({ params }: PageProps) {
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
-  const url = `${baseUrl}/api/surveys/slug/${encodeURIComponent(
+  const h = await headers();
+  const host = h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const origin = host ? `${proto}://${host}` : "";
+
+  const url = `${origin}/api/surveys/slug/${encodeURIComponent(
     surveyId
   )}/${encodeURIComponent(surveySlug)}`;
 
@@ -77,7 +82,7 @@ export default async function SurveyPublicPage({ params }: PageProps) {
             <Heading size="lg">{title}</Heading>
             {description ? <Text color="gray.600" mt={1}>{description}</Text> : null}
           </Box>
-          <PublicSurveyForm surveyId={surveyId} survey={survey} baseUrl={baseUrl} />
+          <PublicSurveyForm surveyId={surveyId} survey={survey} baseUrl={""} />
         </VStack>
       </Container>
     </Box>

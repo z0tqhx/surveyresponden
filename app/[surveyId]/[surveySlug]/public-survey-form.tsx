@@ -106,7 +106,7 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
     [aspectGroups]
   );
 
-  const [consent, setConsent] = React.useState<boolean>(true);
+  const [consent, setConsent] = React.useState<boolean>(false);
   const [respondent, setRespondent] = React.useState({
     name: "",
     job: "",
@@ -128,14 +128,38 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [submitOk, setSubmitOk] = React.useState<string | null>(null);
   const [successOpen, setSuccessOpen] = React.useState(false);
+  const [alertOpen, setAlertOpen] = React.useState(false);
+  const [alertTitle, setAlertTitle] = React.useState<string>("");
+  const [alertMessage, setAlertMessage] = React.useState<string>("");
 
   const answerOptions = React.useMemo(
     () => ["Setuju", "Netral", "Tidak Setuju"] as const,
     []
   );
 
+  function openAlert(title: string, message: string) {
+    setSubmitError(null);
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertOpen(true);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!consent) {
+      openAlert("Persetujuan diperlukan", "Silakan centang kotak persetujuan.");
+      return;
+    }
+
+    const missingAnswerIds = Object.keys(responses).filter(
+      (id) => (responses[id] ?? "").trim().length === 0
+    );
+    if (missingAnswerIds.length > 0) {
+      openAlert("Survey belum lengkap", "Ada survey yang belum di isi. Silakan lengkapi jawaban terlebih dulu.");
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError(null);
     setSubmitOk(null);
@@ -168,6 +192,10 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
+        if (res.status === 400 && text.includes("Consent")) {
+          openAlert("Persetujuan diperlukan", "Silakan centang kotak persetujuan.");
+          return;
+        }
         throw new Error(`Submit gagal. Status: ${res.status}${text ? ` - ${text}` : ""}`);
       }
 
@@ -184,13 +212,32 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
     if (!successOpen) return;
     const t = window.setTimeout(() => {
       router.push("/terimakasih");
-    }, 1400);
+    }, 1000);
     return () => window.clearTimeout(t);
   }, [router, successOpen]);
 
   return (
     <Box as="form" onSubmit={handleSubmit} bg="white" borderWidth="1px" borderRadius="md" p={6}>
       <VStack align="stretch" gap={6}>
+        <Dialog.Root open={alertOpen} onOpenChange={(e) => setAlertOpen(Boolean(e.open))}>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>{alertTitle}</Dialog.Title>
+              </Dialog.Header>
+              <Dialog.Body>
+                <Text color="gray.600">{alertMessage}</Text>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Button variant="outline" onClick={() => setAlertOpen(false)}>
+                  Close
+                </Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Dialog.Root>
+
         <Dialog.Root open={successOpen} onOpenChange={(e) => setSuccessOpen(Boolean(e.open))}>
           <Dialog.Backdrop />
           <Dialog.Positioner>
@@ -199,18 +246,37 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
                 <Dialog.Title>Data berhasil disimpan</Dialog.Title>
               </Dialog.Header>
               <Dialog.Body>
-                <Text color="gray.600">
-                  Terima kasih! Kamu akan diarahkan ke halaman berikutnya.
-                </Text>
+                <VStack gap={4} py={2}>
+                  <Box width={{ base: "120px", md: "140px" }} height={{ base: "120px", md: "140px" }}>
+                    <svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 200 200"
+                      aria-label="Success"
+                      role="img"
+                    >
+                      <path
+                        d="M100 8c50.8 0 92 41.2 92 92s-41.2 92-92 92S8 150.8 8 100 49.2 8 100 8z"
+                        fill="#37B24D"
+                      />
+                      <circle cx="100" cy="100" r="62" fill="#9AE6B4" opacity="0.9" />
+                      <circle cx="100" cy="100" r="52" fill="#A7F3D0" opacity="0.55" />
+                      <path
+                        d="M82 106l-16-16a8 8 0 0 0-11 11l22 22a8 8 0 0 0 11 0l54-54a8 8 0 0 0-11-11l-49 49z"
+                        fill="#F59E0B"
+                        stroke="#1F2A44"
+                        strokeWidth="10"
+                        strokeLinejoin="round"
+                      />
+                      <circle cx="100" cy="100" r="62" fill="none" stroke="#1F2A44" strokeWidth="10" />
+                    </svg>
+                  </Box>
+
+                  <Text color="gray.600" textAlign="center">
+                    Terima kasih! Kamu akan diarahkan otomatis.
+                  </Text>
+                </VStack>
               </Dialog.Body>
-              <Dialog.Footer>
-                <Button
-                  variant="solid"
-                  onClick={() => router.push("/terimakasih")}
-                >
-                  Lanjut
-                </Button>
-              </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>
         </Dialog.Root>
@@ -337,7 +403,10 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
                                     size="sm"
                                     variant={selected === opt ? "solid" : "outline"}
                                     onClick={() =>
-                                      setResponses((s) => ({ ...s, [id]: opt }))
+                                      setResponses((s) => ({
+                                        ...s,
+                                        [id]: s[id] === opt ? "" : opt,
+                                      }))
                                     }
                                   >
                                     {opt}
