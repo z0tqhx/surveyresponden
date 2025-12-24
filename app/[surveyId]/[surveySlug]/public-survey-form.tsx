@@ -143,9 +143,9 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
     () =>
       [
         "Tidak Sekolah / Tidak Tamat SD",
-        "SD (Sekolah Dasar) atau sederajat (misalnya, MI - Madrasah Ibtidaiyah)",
-        "SMP (Sekolah Menengah Pertama) atau sederajat (misalnya, MTs - Madrasah Tsanawiyah)",
-        "SMA (Sekolah Menengah Atas) atau sederajat (misalnya, SMK - Sekolah Menengah Kejuruan, MA - Madrasah Aliyah)",
+        "SD (Sekolah Dasar)",
+        "SMP (Sekolah Menengah Pertama)",
+        "SMA (Sekolah Menengah Atas)",
         "D1/D2 (Diploma 1 atau 2)",
         "D3 (Diploma 3)",
         "D4/S1 (Diploma 4 atau Sarjana 1)",

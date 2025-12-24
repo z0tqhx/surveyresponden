@@ -10,7 +10,7 @@ type Props = {
 };
 
 function createEmotionCache() {
-  const cache = createCache({ key: "chakra" });
+  const cache = createCache({ key: "chakra", prepend: true });
   cache.compat = true;
   return cache;
 }

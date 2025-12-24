@@ -17,10 +17,12 @@
     "framer-motion": "^12.23.26",
     "next": "16.0.10",
     "react": "19.2.1",
-    "react-dom": "19.2.1"
+    "react-dom": "19.2.1",
+    "three": "^0.160.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/three": "^0.160.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

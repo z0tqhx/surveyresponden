@@ -1,7 +1,7 @@
-import { HomeHero } from "./components/HomeHero";
+import { LandingPage } from "./components/LandingPage";
 
 export default function Home() {
   return (
-    <HomeHero />
+    <LandingPage />
   );
 }
