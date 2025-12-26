@@ -118,23 +118,11 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
   const jobOptions = React.useMemo(
     () =>
       [
-        "Status tidak bekerja - Belum/Tidak bekerja",
-        "Status tidak bekerja - Mengurus rumah tangga",
-        "Status tidak bekerja - Pelajar/Mahasiswa",
-        "Pegawai Pemerintah - PNS",
-        "Pegawai Pemerintah - TNI",
-        "Pegawai Pemerintah - Polri",
-        "Pegawai Pemerintah - Kepala Desa",
-        "Wiraswasta - Pedagang",
-        "Wiraswasta - Buruh",
-        "Wiraswasta - Petani",
-        "Wiraswasta - Nelayan",
-        "Wiraswasta - Wiraswasta",
-        "Profesi khusus - Dokter",
-        "Profesi khusus - Guru",
-        "Profesi khusus - Seniman",
-        "Pekerjaan informal - Tukang",
-        "Pekerjaan informal - Buruh harian lepas",
+        "Tidak bekerja",
+        "Pelajar/Mahasiswa",
+        "Pegawai Pemerintah",
+        "Pegawai Swasta",
+        "Wiraswasta",
       ],
     []
   );
@@ -143,14 +131,14 @@ export function PublicSurveyForm({ surveyId, baseUrl, survey }: Props) {
     () =>
       [
         "Tidak Sekolah / Tidak Tamat SD",
-        "SD (Sekolah Dasar)",
-        "SMP (Sekolah Menengah Pertama)",
-        "SMA (Sekolah Menengah Atas)",
-        "D1/D2 (Diploma 1 atau 2)",
-        "D3 (Diploma 3)",
-        "D4/S1 (Diploma 4 atau Sarjana 1)",
-        "S2 (Sarjana 2 / Magister)",
-        "S3 (Sarjana 3 / Doktor)",
+        "SD",
+        "SMP",
+        "SMA",
+        "D1/D2",
+        "D3",
+        "D4/S1",
+        "S2",
+        "S3",
       ],
     []
   );

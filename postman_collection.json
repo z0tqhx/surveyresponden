@@ -7,10 +7,15 @@
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:8080" },
     { "key": "token", "value": "" },
+    { "key": "userId", "value": "" },
     { "key": "surveyId", "value": "" },
     { "key": "surveySlug", "value": "" },
     { "key": "aspectId", "value": "" },
-    { "key": "subAspectId", "value": "" }
+    { "key": "subAspectId", "value": "" },
+    { "key": "commentId", "value": "" },
+    { "key": "letterheadId", "value": "" },
+    { "key": "printTemplateId", "value": "" },
+    { "key": "teamMemberId", "value": "" }
   ],
   "item": [
     {
@@ -252,6 +257,89 @@
           }
         },
         {
+          "name": "Create Survey Comment (/admin/surveys/:id/comments)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Catatan admin untuk survei ini\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/surveys/{{surveyId}}/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "surveys", "{{surveyId}}", "comments"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('commentId', json.id);",
+                  "    pm.collectionVariables.set('commentId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Survey Comments (/admin/surveys/:id/comments)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/surveys/{{surveyId}}/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "surveys", "{{surveyId}}", "comments"]
+            }
+          }
+        },
+        {
+          "name": "Update Survey Comment (/admin/surveys/:id/comments/:commentId)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Catatan admin (update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/surveys/{{surveyId}}/comments/{{commentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "surveys", "{{surveyId}}", "comments", "{{commentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Survey Comment (/admin/surveys/:id/comments/:commentId)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/surveys/{{surveyId}}/comments/{{commentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "surveys", "{{surveyId}}", "comments", "{{commentId}}"]
+            }
+          }
+        },
+        {
           "name": "Submit Survey Response (/admin/surveys/:id/responses)",
           "request": {
             "method": "POST",
@@ -267,6 +355,262 @@
               "raw": "{{baseUrl}}/api/admin/surveys/{{surveyId}}/responses",
               "host": ["{{baseUrl}}"],
               "path": ["api", "admin", "surveys", "{{surveyId}}", "responses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (Admin)",
+      "item": [
+        {
+          "name": "List Users (/admin/users)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User (/admin/users)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Petugas 1\",\n  \"email\": \"petugas1@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"petugas\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('userId', json.id);",
+                  "    pm.collectionVariables.set('userId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update User (/admin/users/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Petugas 1 (Update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password (/admin/users/:id/reset-password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{userId}}", "reset-password"]
+            }
+          }
+        },
+        {
+          "name": "Delete User (/admin/users/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "List Petugas With Team (/admin/petugas-with-team)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/petugas-with-team",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "petugas-with-team"]
+            }
+          }
+        },
+        {
+          "name": "List Team Members (Admin) (/admin/team-members)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/team-members?user_id={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "team-members"],
+              "query": [
+                { "key": "user_id", "value": "{{userId}}" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const first = Array.isArray(json) ? json[0] : null;",
+                  "  if (first && first.id) {",
+                  "    pm.environment.set('teamMemberId', first.id);",
+                  "    pm.collectionVariables.set('teamMemberId', first.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Team Member (Admin) (/admin/team-members)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"name\": \"Anggota Admin 1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/team-members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "team-members"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('teamMemberId', json.id);",
+                  "    pm.collectionVariables.set('teamMemberId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Team Member (Admin) (/admin/team-members/:id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/team-members/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "team-members", "{{teamMemberId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('teamMemberId', json.id);",
+                  "    pm.collectionVariables.set('teamMemberId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Team Member (Admin) (/admin/team-members/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Anggota Admin 1 (Update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/team-members/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "team-members", "{{teamMemberId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Team Member (Admin) (/admin/team-members/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/team-members/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "team-members", "{{teamMemberId}}"]
             }
           }
         }
@@ -302,31 +646,407 @@
               "path": ["api", "petugas", "surveys", "slug", "{{surveySlug}}"]
             }
           }
-        }
-      ]
-    },
-    {
-      "name": "Responses (Admin/Petugas)",
-      "item": [
+        },
         {
-          "name": "List All Responses",
+          "name": "Create Aspect Comment (/petugas/aspects/:aspectId/comments)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Komentar petugas untuk aspek ini\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/aspects/{{aspectId}}/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "aspects", "{{aspectId}}", "comments"]
+            }
+          }
+        },
+        {
+          "name": "List Aspect Comments (/petugas/aspects/:aspectId/comments)",
           "request": {
             "method": "GET",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/responses?page=1&limit=50&survey_id={{surveyId}}&q={{search}}",
+              "raw": "{{baseUrl}}/api/petugas/aspects/{{aspectId}}/comments",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "responses"],
-              "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "50" },
-                { "key": "survey_id", "value": "{{surveyId}}" },
-                { "key": "q", "value": "{{search}}" }
-              ]
+              "path": ["api", "petugas", "aspects", "{{aspectId}}", "comments"]
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "Petugas (Allowed)",
+      "item": [
+        {
+          "name": "List My Surveys (/petugas/surveys)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "surveys"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const first = Array.isArray(json) ? json[0] : null;",
+                  "  if (first && first.id) {",
+                  "    pm.environment.set('surveyId', first.id);",
+                  "    pm.collectionVariables.set('surveyId', first.id);",
+                  "  }",
+                  "  if (first && first.slug) {",
+                  "    pm.environment.set('surveySlug', first.slug);",
+                  "    pm.collectionVariables.set('surveySlug', first.slug);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Survey By Slug (/petugas/surveys/slug/:slug)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/surveys/slug/{{surveySlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "surveys", "slug", "{{surveySlug}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('surveyId', json.id);",
+                  "    pm.collectionVariables.set('surveyId', json.id);",
+                  "  }",
+                  "  if (json && json.slug) {",
+                  "    pm.environment.set('surveySlug', json.slug);",
+                  "    pm.collectionVariables.set('surveySlug', json.slug);",
+                  "  }",
+                  "  const asp = json && Array.isArray(json.aspects) ? json.aspects[0] : null;",
+                  "  if (asp && asp.id) {",
+                  "    pm.environment.set('aspectId', asp.id);",
+                  "    pm.collectionVariables.set('aspectId', asp.id);",
+                  "  }",
+                  "  const sub = asp && Array.isArray(asp.sub_aspects) ? asp.sub_aspects[0] : null;",
+                  "  if (sub && sub.id) {",
+                  "    pm.environment.set('subAspectId', sub.id);",
+                  "    pm.collectionVariables.set('subAspectId', sub.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Survey (/surveys)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Survey Petugas\",\n  \"description\": \"Dibuat oleh petugas\",\n  \"slug\": \"survey-petugas\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys"]
+            }
+          }
+        },
+        {
+          "name": "Update Survey (/surveys/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Survey Petugas (Update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Survey (/surveys/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Aspect (/surveys/:id/aspects)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pelayanan\",\n  \"order_number\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "aspects"]
+            }
+          }
+        },
+        {
+          "name": "List Aspects (/surveys/:id/aspects)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "aspects"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const first = Array.isArray(json) ? json[0] : null;",
+                  "  if (first && first.id) {",
+                  "    pm.environment.set('aspectId', first.id);",
+                  "    pm.collectionVariables.set('aspectId', first.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Aspect (/aspects/:aspectId)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pelayanan (Update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Aspect (/aspects/:aspectId)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Sub-Aspect (/aspects/:aspectId/sub-aspects)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Petugas melayani dengan ramah\",\n  \"order_number\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}/sub-aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}", "sub-aspects"]
+            }
+          }
+        },
+        {
+          "name": "List Sub-Aspects (/aspects/:aspectId/sub-aspects)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/aspects/{{aspectId}}/sub-aspects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "aspects", "{{aspectId}}", "sub-aspects"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const first = Array.isArray(json) ? json[0] : null;",
+                  "  if (first && first.id) {",
+                  "    pm.environment.set('subAspectId', first.id);",
+                  "    pm.collectionVariables.set('subAspectId', first.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Sub-Aspect (/sub-aspects/:subAspectId)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Petugas melayani dengan ramah (Update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sub-aspects/{{subAspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sub-aspects", "{{subAspectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Sub-Aspect (/sub-aspects/:subAspectId)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sub-aspects/{{subAspectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sub-aspects", "{{subAspectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Survey Responses (/surveys/:id/responses)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/responses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "responses"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const surveyId = pm.variables.get('surveyId');",
+                  "  if (surveyId) {",
+                  "    pm.environment.set('surveyId', surveyId);",
+                  "    pm.collectionVariables.set('surveyId', surveyId);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Survey Summary (/surveys/:id/summary)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/surveys/{{surveyId}}/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "surveys", "{{surveyId}}", "summary"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const surveyId = pm.variables.get('surveyId');",
+                  "  if (surveyId) {",
+                  "    pm.environment.set('surveyId', surveyId);",
+                  "    pm.collectionVariables.set('surveyId', surveyId);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Survey Responses Analytics (/surveys/:id/responses/analytics)",
@@ -340,11 +1060,516 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "surveys", "{{surveyId}}", "responses", "analytics"]
             }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const surveyId = pm.variables.get('surveyId');",
+                  "  if (surveyId) {",
+                  "    pm.environment.set('surveyId', surveyId);",
+                  "    pm.collectionVariables.set('surveyId', surveyId);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List My Letterheads (/petugas/letterheads)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/letterheads",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "letterheads"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const first = Array.isArray(json) ? json[0] : null;",
+                  "  if (first && first.id) {",
+                  "    pm.environment.set('letterheadId', first.id);",
+                  "    pm.collectionVariables.set('letterheadId', first.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Letterhead (/petugas/letterheads/:id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/letterheads/{{letterheadId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "letterheads", "{{letterheadId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('letterheadId', json.id);",
+                  "    pm.collectionVariables.set('letterheadId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create My Letterhead (/petugas/letterheads)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "multipart/form-data" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "logo", "type": "file", "src": "" },
+                { "key": "institution_name", "type": "text", "value": "Instansi Petugas" },
+                { "key": "address", "type": "text", "value": "Jl. Contoh No. 1" },
+                { "key": "phone", "type": "text", "value": "08123456789" },
+                { "key": "email", "type": "text", "value": "instansi@example.com" },
+                { "key": "website", "type": "text", "value": "https://example.com" },
+                { "key": "establishment_sk", "type": "text", "value": "SK-001/2025" },
+                { "key": "is_active", "type": "text", "value": "true" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/letterheads",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "letterheads"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('letterheadId', json.id);",
+                  "    pm.collectionVariables.set('letterheadId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update My Letterhead (/petugas/letterheads/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "multipart/form-data" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "logo", "type": "file", "src": "" },
+                { "key": "institution_name", "type": "text", "value": "Instansi Petugas (Update)" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/letterheads/{{letterheadId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "letterheads", "{{letterheadId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete My Letterhead (/petugas/letterheads/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/letterheads/{{letterheadId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "letterheads", "{{letterheadId}}"]
+            }
+          }
+        },
+        {
+          "name": "Set Active My Letterhead (/petugas/letterheads/:id/set-active)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/letterheads/{{letterheadId}}/set-active",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "letterheads", "{{letterheadId}}", "set-active"]
+            }
+          }
+        },
+        {
+          "name": "Preview Active Letterhead HTML (/petugas/letterheads/active/preview)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/letterheads/active/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "letterheads", "active", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview Survey Print HTML (/petugas/surveys/:id/print-preview)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/surveys/{{surveyId}}/print-preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "surveys", "{{surveyId}}", "print-preview"]
+            }
+          }
+        },
+        {
+          "name": "Preview Survey Print JSON (/petugas/surveys/:id/print-preview.json)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/surveys/{{surveyId}}/print-preview.json",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "surveys", "{{surveyId}}", "print-preview.json"]
+            }
+          }
+        },
+        {
+          "name": "List My Team Members (/petugas/team-members)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/team-members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "team-members"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const first = Array.isArray(json) ? json[0] : null;",
+                  "  if (first && first.id) {",
+                  "    pm.environment.set('teamMemberId', first.id);",
+                  "    pm.collectionVariables.set('teamMemberId', first.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Team Member (/petugas/team-members)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Anggota 1\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/team-members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "team-members"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('teamMemberId', json.id);",
+                  "    pm.collectionVariables.set('teamMemberId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Team Member (/petugas/team-members/:id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/team-members/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "team-members", "{{teamMemberId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('teamMemberId', json.id);",
+                  "    pm.collectionVariables.set('teamMemberId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Team Member (/petugas/team-members/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Anggota 1 (Update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/team-members/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "team-members", "{{teamMemberId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Team Member (/petugas/team-members/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/team-members/{{teamMemberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "team-members", "{{teamMemberId}}"]
+            }
+          }
+        },
+        {
+          "name": "List My Print Templates (/petugas/print-templates)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  const first = Array.isArray(json) ? json[0] : null;",
+                  "  if (first && first.id) {",
+                  "    pm.environment.set('printTemplateId', first.id);",
+                  "    pm.collectionVariables.set('printTemplateId', first.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Print Template (/petugas/print-templates)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Template 1\",\n  \"survey_id\": \"{{surveyId}}\",\n  \"letterhead_id\": \"{{letterheadId}}\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.id) {",
+                  "    pm.environment.set('printTemplateId', json.id);",
+                  "    pm.collectionVariables.set('printTemplateId', json.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Print Template (/petugas/print-templates/:id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates/{{printTemplateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates", "{{printTemplateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Print Template (/petugas/print-templates/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Template 1 (Update)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates/{{printTemplateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates", "{{printTemplateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Print Template (/petugas/print-templates/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates/{{printTemplateId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates", "{{printTemplateId}}"]
+            }
+          }
+        },
+        {
+          "name": "Set Active Print Template (/petugas/print-templates/:id/set-active)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates/{{printTemplateId}}/set-active",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates", "{{printTemplateId}}", "set-active"]
+            }
+          }
+        },
+        {
+          "name": "Preview Print Template HTML (/petugas/print-templates/:id/preview)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates/{{printTemplateId}}/preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates", "{{printTemplateId}}", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Download Print Template PDF (/petugas/print-templates/:id/pdf)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/petugas/print-templates/{{printTemplateId}}/pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "petugas", "print-templates", "{{printTemplateId}}", "pdf"]
+            }
           }
         }
       ]
-    }
-    ,
+    },
     {
       "name": "Content (Admin/Petugas)",
       "item": [

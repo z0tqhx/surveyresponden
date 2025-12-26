@@ -6,13 +6,9 @@ import {
   Button,
   Card,
   Container,
-  Field,
   HStack,
-  Input,
   SimpleGrid,
-  Stack,
   Text,
-  Textarea,
   VStack,
   Heading,
   Separator,
@@ -23,64 +19,6 @@ import * as React from "react";
 import LiquidEther from "./LiquidEther";
 
 const MotionBox = motion.create(Box);
-
-type ContactFormState = {
-  name: string;
-  organization: string;
-  phoneOrEmail: string;
-  needs: string;
-};
-
-function useContactForm() {
-  const [state, setState] = React.useState<ContactFormState>({
-    name: "",
-    organization: "",
-    phoneOrEmail: "",
-    needs: "",
-  });
-
-  const [submitted, setSubmitted] = React.useState(false);
-
-  const errors = React.useMemo(() => {
-    const next: Partial<Record<keyof ContactFormState, string>> = {};
-    if (!state.name.trim()) next.name = "Nama wajib diisi";
-    if (!state.phoneOrEmail.trim()) next.phoneOrEmail = "Kontak (Email/WhatsApp) wajib diisi";
-    if (!state.needs.trim()) next.needs = "Ceritakan kebutuhan survei kamu";
-    return next;
-  }, [state]);
-
-  function update<K extends keyof ContactFormState>(key: K, value: ContactFormState[K]) {
-    setState((s) => ({ ...s, [key]: value }));
-  }
-
-  function reset() {
-    setState({ name: "", organization: "", phoneOrEmail: "", needs: "" });
-    setSubmitted(false);
-  }
-
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSubmitted(true);
-
-    if (Object.keys(errors).length > 0) return;
-
-    const subject = encodeURIComponent("Permintaan Penawaran Survei - Survei Kita");
-    const body = encodeURIComponent(
-      [
-        `Nama: ${state.name}`,
-        `Instansi/Organisasi: ${state.organization || "-"}`,
-        `Kontak (Email/WA): ${state.phoneOrEmail}`,
-        "",
-        "Kebutuhan:",
-        state.needs,
-      ].join("\n")
-    );
-
-    window.location.href = `mailto:hello@surveikita.id?subject=${subject}&body=${body}`;
-  }
-
-  return { state, update, errors, submitted, onSubmit, reset };
-}
 
 function SectionHeading(props: { eyebrow?: string; title: string; description?: string }) {
   return (
@@ -130,7 +68,6 @@ function NavLink(props: { href: string; label: string }) {
 
 export function LandingPage() {
   const reduceMotion = useReducedMotion();
-  const contact = useContactForm();
   const [year, setYear] = React.useState<number | null>(null);
 
   React.useEffect(() => {
@@ -523,73 +460,6 @@ export function LandingPage() {
 
       <Container maxW="6xl" py={{ base: 12, md: 16 }} id="kontak">
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={{ base: 10, md: 12 }} alignItems="start">
-          <VStack align="stretch" gap={6}>
-            <SectionHeading
-              eyebrow="Contact"
-              title="Ceritakan kebutuhan survei kamu"
-              description="Isi form ini untuk konsultasi gratis. Kami akan membantu merekomendasikan metode, jumlah responden, dan output yang paling pas."
-            />
-
-            <Card.Root bg="white" borderWidth="1px" borderRadius="2xl" boxShadow="sm">
-              <Card.Body p={6}>
-                <Stack as="form" gap={4} onSubmit={contact.onSubmit}>
-                  <Field.Root invalid={contact.submitted && Boolean(contact.errors.name)}>
-                    <Field.Label>Nama</Field.Label>
-                    <Input
-                      value={contact.state.name}
-                      onChange={(e) => contact.update("name", e.target.value)}
-                      placeholder="Nama lengkap"
-                    />
-                    <Field.ErrorText>{contact.errors.name}</Field.ErrorText>
-                  </Field.Root>
-
-                  <Field.Root>
-                    <Field.Label>Instansi / Organisasi</Field.Label>
-                    <Input
-                      value={contact.state.organization}
-                      onChange={(e) => contact.update("organization", e.target.value)}
-                      placeholder="Contoh: Dinas, Brand, Komunitas"
-                    />
-                  </Field.Root>
-
-                  <Field.Root invalid={contact.submitted && Boolean(contact.errors.phoneOrEmail)}>
-                    <Field.Label>Kontak (Email / WhatsApp)</Field.Label>
-                    <Input
-                      value={contact.state.phoneOrEmail}
-                      onChange={(e) => contact.update("phoneOrEmail", e.target.value)}
-                      placeholder="contoh@email.com / 08xxxx"
-                    />
-                    <Field.ErrorText>{contact.errors.phoneOrEmail}</Field.ErrorText>
-                  </Field.Root>
-
-                  <Field.Root invalid={contact.submitted && Boolean(contact.errors.needs)}>
-                    <Field.Label>Kebutuhan survei</Field.Label>
-                    <Textarea
-                      value={contact.state.needs}
-                      onChange={(e) => contact.update("needs", e.target.value)}
-                      placeholder="Contoh: Survei kepuasan layanan, 300 responden, target warga kota X, butuh laporan PPT"
-                      minH="120px"
-                    />
-                    <Field.ErrorText>{contact.errors.needs}</Field.ErrorText>
-                  </Field.Root>
-
-                  <HStack gap={3} flexWrap="wrap">
-                    <Button type="submit" colorPalette="green">
-                      Kirim via Email
-                    </Button>
-                    <Button type="button" variant="outline" onClick={contact.reset}>
-                      Reset
-                    </Button>
-                  </HStack>
-
-                  <Text fontSize="xs" color="gray.600">
-                    Dengan mengirim, kamu setuju kami menghubungi lewat kontak yang kamu berikan.
-                  </Text>
-                </Stack>
-              </Card.Body>
-            </Card.Root>
-          </VStack>
-
           <VStack align="stretch" gap={5}>
             <Card.Root bg="white" borderWidth="1px" borderRadius="2xl" boxShadow="sm">
               <Card.Body p={6}>
@@ -623,7 +493,12 @@ export function LandingPage() {
                   <Text color="gray.200" fontSize="sm">
                     Kirim brief singkat, kami balas dengan rekomendasi paket & timeline.
                   </Text>
-                  <a href="https://wa.me/" target="_blank" rel="noreferrer" style={{ display: "inline-flex" }}>
+                  <a
+                    href="https://api.whatsapp.com/send/?phone=62895382096386&text=Halo,%20saya%20tertarik%20menggunakan%20jasa%20survei%20ini%20untuk%20mendukung%20kebutuhan%20proyek%20kami.%20Mohon%20informasi%20detail%20terkait%20layanan,%20metodologi%20survei,%20serta%20estimasi%20biaya.%20Terima%20kasih.&type=phone_number&app_absent=0"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ display: "inline-flex" }}
+                  >
                     <Button colorPalette="green" variant="solid">
                       Chat WhatsApp
                     </Button>
@@ -631,6 +506,101 @@ export function LandingPage() {
                   <Text fontSize="xs" color="gray.300">
                     Ganti link WhatsApp sesuai nomor admin kamu.
                   </Text>
+                </VStack>
+              </Card.Body>
+            </Card.Root>
+          </VStack>
+
+          <VStack align="stretch" gap={5}>
+            <Card.Root bg="white" borderWidth="1px" borderRadius="2xl" boxShadow="sm">
+              <Card.Body p={6}>
+                <VStack align="stretch" gap={4}>
+                  <HStack justify="space-between" align="start" gap={3}>
+                    <VStack align="start" gap={1}>
+                      <Text fontWeight="bold">Statistik singkat</Text>
+                      <Text fontSize="sm" color="gray.600">
+                        Snapshot metrik operasional untuk menjaga kualitas & kecepatan.
+                      </Text>
+                    </VStack>
+                    <Badge colorPalette="green" variant="subtle" borderRadius="full" px={3} py={1}>
+                      Updated mingguan
+                    </Badge>
+                  </HStack>
+
+                  <SimpleGrid columns={{ base: 1, sm: 2 }} gap={3}>
+                    <Box borderWidth="1px" borderRadius="xl" p={4} bg="gray.50">
+                      <Text fontSize="xs" color="gray.600">
+                        Kecepatan respons
+                      </Text>
+                      <Text fontWeight="extrabold" fontSize="2xl" letterSpacing="tight">
+                        H+1
+                      </Text>
+                      <Text fontSize="xs" color="gray.600">
+                        rata-rata balasan pertama
+                      </Text>
+                    </Box>
+
+                    <Box borderWidth="1px" borderRadius="xl" p={4} bg="gray.50">
+                      <Text fontSize="xs" color="gray.600">
+                        Skala responden
+                      </Text>
+                      <Text fontWeight="extrabold" fontSize="2xl" letterSpacing="tight">
+                        500+
+                      </Text>
+                      <Text fontSize="xs" color="gray.600">
+                        kapasitas responden/bulan
+                      </Text>
+                    </Box>
+
+                    <Box borderWidth="1px" borderRadius="xl" p={4} bg="gray.50">
+                      <Text fontSize="xs" color="gray.600">
+                        Valid completion
+                      </Text>
+                      <Text fontWeight="extrabold" fontSize="2xl" letterSpacing="tight">
+                        92%
+                      </Text>
+                      <Box h="10px" borderRadius="full" bg="gray.200" overflow="hidden" mt={2}>
+                        <Box h="10px" w="92%" bgGradient="linear(to-r, green.600, yellow.400)" />
+                      </Box>
+                    </Box>
+
+                    <Box borderWidth="1px" borderRadius="xl" p={4} bg="gray.50">
+                      <Text fontSize="xs" color="gray.600">
+                        Quality control
+                      </Text>
+                      <Text fontWeight="extrabold" fontSize="2xl" letterSpacing="tight">
+                        3 lapis
+                      </Text>
+                      <Text fontSize="xs" color="gray.600">
+                        anti-duplikat, speed check, outlier
+                      </Text>
+                    </Box>
+                  </SimpleGrid>
+                </VStack>
+              </Card.Body>
+            </Card.Root>
+
+            <Card.Root bg="green.50" borderWidth="1px" borderRadius="2xl">
+              <Card.Body p={6}>
+                <VStack align="stretch" gap={3}>
+                  <Text fontWeight="bold">Yang kamu dapat</Text>
+                  <Text fontSize="sm" color="gray.700">
+                    Ringkasan insight yang siap dipresentasikan, plus rekomendasi action item yang bisa langsung dieksekusi.
+                  </Text>
+                  <SimpleGrid columns={{ base: 1, sm: 2 }} gap={3}>
+                    <Box borderWidth="1px" borderRadius="xl" p={4} bg="white">
+                      <Text fontSize="xs" color="gray.600">
+                        Output
+                      </Text>
+                      <Text fontWeight="bold">PPT + Sheet data</Text>
+                    </Box>
+                    <Box borderWidth="1px" borderRadius="xl" p={4} bg="white">
+                      <Text fontSize="xs" color="gray.600">
+                        Ekstra
+                      </Text>
+                      <Text fontWeight="bold">1x sesi review</Text>
+                    </Box>
+                  </SimpleGrid>
                 </VStack>
               </Card.Body>
             </Card.Root>
