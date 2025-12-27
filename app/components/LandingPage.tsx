@@ -93,7 +93,51 @@ export function LandingPage() {
                 borderRadius="lg"
                 bgGradient="linear(to-br, green.600, yellow.400)"
                 flexShrink={0}
-              />
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-label="Insight"
+                  role="img"
+                >
+                  <path
+                    d="M4 19V5"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M4 19H20"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M8 15V11"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M12 15V8"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M16 15V10"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </Box>
               <VStack align="start" gap={0} minW={0}>
                 <Text fontWeight="extrabold" letterSpacing="tight" truncate>
                   Survei Kita
@@ -319,14 +363,124 @@ export function LandingPage() {
               {
                 title: "Desain kuesioner",
                 desc: "Struktur pertanyaan, skala, logika, dan wording yang netral agar hasilnya valid.",
+                icon: (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-label="Kuesioner"
+                    role="img"
+                  >
+                    <path
+                      d="M12 20h9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ),
               },
               {
                 title: "Distribusi responden",
                 desc: "Panel, komunitas, internal database, atau target spesifik (demografi/segmentasi).",
+                icon: (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-label="Responden"
+                    role="img"
+                  >
+                    <path
+                      d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8 11c1.7 0 3-1.3 3-3S9.7 5 8 5 5 6.3 5 8s1.3 3 3 3z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M2 20c0-2.2 2.7-4 6-4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M14 16c3.3 0 6 1.8 6 4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 16h8"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                ),
               },
               {
                 title: "Analisis & laporan",
                 desc: "Tabulasi, cross-tab, insight, dan rekomendasi yang siap dipresentasikan.",
+                icon: (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-label="Analisis"
+                    role="img"
+                  >
+                    <path
+                      d="M4 19V5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M4 19H20"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 15V11"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M12 15V8"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M16 15V10"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                ),
               },
             ].map((item) => (
               <Card.Root
@@ -346,7 +500,13 @@ export function LandingPage() {
                       bg="green.50"
                       borderWidth="1px"
                       borderColor="green.100"
-                    />
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      color="green.700"
+                    >
+                      {item.icon}
+                    </Box>
                     <Text fontWeight="bold" fontSize="lg">
                       {item.title}
                     </Text>

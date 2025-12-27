@@ -19,6 +19,9 @@ export const metadata: Metadata = {
     template: "Survei Kita ~ %s",
   },
   description: "Survei Kita",
+  icons: {
+    icon: [{ url: "/title.ico" }],
+  },
 };
 
 export default function RootLayout({
